@@ -1,4 +1,4 @@
-import { render } from "@testing-library/react";
+import { fireEvent, render } from "@testing-library/react";
 import Lightbox from "./Lightbox";
 
 describe("Lightbox", () => {
@@ -12,8 +12,15 @@ describe("Lightbox", () => {
     alt_description: "stub-alt",
     description: "stub-description",
   };
+  const stubHideLightbox = jest.fn();
   const renderLightbox = (isLightBoxShown, image) => {
-    return render(<Lightbox isLightBoxShown={isLightBoxShown} image={image} />);
+    return render(
+      <Lightbox
+        isLightBoxShown={isLightBoxShown}
+        image={image}
+        hideLightbox={stubHideLightbox}
+      />
+    );
   };
   it("does not render Lightbox if isLightBoxShown is not defined", () => {
     const { container, debug } = renderLightbox(false);
@@ -30,18 +37,17 @@ describe("Lightbox", () => {
     );
 
     expect(
-      container
-        .querySelector(".lightbox__image-container img")
-        .getAttribute("src")
+      container.querySelector(".lightbox__image img").getAttribute("src")
     ).toEqual("stub-url");
 
     expect(
-      container
-        .querySelector(".lightbox__image-container img")
-        .getAttribute("alt")
+      container.querySelector(".lightbox__image img").getAttribute("alt")
     ).toEqual("stub-alt");
     expect(
-      container.querySelector(".lightbox__image-description p").textContent
+      container.querySelector(".lightbox__description p").textContent
     ).toEqual("stub-description");
+
+    fireEvent.click(container.querySelector(".lightbox"));
+    expect(stubHideLightbox).toHaveBeenCalled();
   });
 });

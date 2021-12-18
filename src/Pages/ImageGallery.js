@@ -1,15 +1,17 @@
 import { useEffect, useState, useRef } from "react";
 import ImageCard from "../Components/ImageCard";
+import Lightbox from "../Components/Lightbox";
 import ImageService from "../Services/ImageService";
 import "./ImageGallery.scss";
 
 export default function ImageGallery() {
   const [images, setImages] = useState([]);
+  const [image, setImage] = useState();
   const [isReady, setIsReady] = useState(false);
-  const [isSearch, setIsSearch] = useState(false);
+  const [isLightBoxShown, setIsLightBoxShown] = useState(false);
+  const [storedImageId, setStoredImageId] = useState();
   const searchRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
-  console.log(searchQuery);
 
   function onSearchSubmit(e) {
     e.preventDefault();
@@ -18,9 +20,24 @@ export default function ImageGallery() {
   }
 
   function showLightbox(id) {
-    ImageService.getImageDetail(id);
-    console.log("shown");
+    setStoredImageId(id);
+    setIsLightBoxShown(true);
   }
+
+  function hideLightbox() {
+    setImage();
+    setStoredImageId();
+    setIsLightBoxShown(false);
+  }
+
+  useEffect(() => {
+    if (storedImageId) {
+      ImageService.getImageDetail(storedImageId).then(({ data }) => {
+        console.log("kepanggil");
+        setImage(data);
+      });
+    }
+  }, [storedImageId]);
 
   useEffect(() => {
     ImageService.getImages(searchQuery)
@@ -32,6 +49,7 @@ export default function ImageGallery() {
         setIsReady(true);
       });
   }, [searchQuery]);
+
   return (
     <>
       <form ref={searchRef} className="image-search" onSubmit={onSearchSubmit}>
@@ -44,6 +62,13 @@ export default function ImageGallery() {
           <p>Loading...</p>
         )}
       </ul>
+      {image && (
+        <Lightbox
+          isLightBoxShown={isLightBoxShown}
+          image={image}
+          hideLightbox={hideLightbox}
+        />
+      )}
     </>
   );
 }
