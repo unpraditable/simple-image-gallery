@@ -43,4 +43,24 @@ describe("ImageService", () => {
       );
     });
   });
+
+  describe("getImageDetail", () => {
+    it("calls axios API with correct properties when ImageService.getImageDetail called", () => {
+      //given
+      jest.spyOn(axios, "get");
+
+      //when
+      ImageService.getImageDetail(123);
+
+      //then
+      expect(axios.get).toHaveBeenCalledWith(
+        "https://api.unsplash.com/photos/123",
+        {
+          params: {
+            client_id: APP_KEY,
+          },
+        }
+      );
+    });
+  });
 });

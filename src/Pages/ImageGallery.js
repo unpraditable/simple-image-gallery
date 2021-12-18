@@ -17,6 +17,11 @@ export default function ImageGallery() {
     setSearchQuery(searchRef.current[0].value);
   }
 
+  function showLightbox(id) {
+    ImageService.getImageDetail(id);
+    console.log("shown");
+  }
+
   useEffect(() => {
     ImageService.getImages(searchQuery)
       .then(({ data }) => {
@@ -33,7 +38,11 @@ export default function ImageGallery() {
         <input placeholder="Search Image" />
       </form>
       <ul className="image-gallery">
-        {isReady ? <ImageCard images={images} /> : <p>Loading...</p>}
+        {isReady ? (
+          <ImageCard images={images} showLightbox={showLightbox} />
+        ) : (
+          <p>Loading...</p>
+        )}
       </ul>
     </>
   );
