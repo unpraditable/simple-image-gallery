@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useRef } from "react";
 import ImageCard from "../Components/ImageCard";
 import ImageService from "../Services/ImageService";
 import "./ImageGallery.scss";
@@ -6,18 +6,35 @@ import "./ImageGallery.scss";
 export default function ImageGallery() {
   const [images, setImages] = useState([]);
   const [isReady, setIsReady] = useState(false);
+  const [isSearch, setIsSearch] = useState(false);
+  const searchRef = useRef();
+  const [searchQuery, setSearchQuery] = useState("");
+  console.log(searchQuery);
+
+  function onSearchSubmit(e) {
+    e.preventDefault();
+    setIsReady(false);
+    setSearchQuery(searchRef.current[0].value);
+  }
+
   useEffect(() => {
-    ImageService.getImages()
+    ImageService.getImages(searchQuery)
       .then(({ data }) => {
-        setImages(data);
+        const newImages = data.results ? data.results : data;
+        setImages(newImages);
       })
       .finally(() => {
         setIsReady(true);
       });
-  }, []);
+  }, [searchQuery]);
   return (
-    <ul className="image-gallery">
-      {isReady ? <ImageCard images={images} /> : <p>Loading...</p>}
-    </ul>
+    <>
+      <form ref={searchRef} className="image-search" onSubmit={onSearchSubmit}>
+        <input placeholder="Search Image" />
+      </form>
+      <ul className="image-gallery">
+        {isReady ? <ImageCard images={images} /> : <p>Loading...</p>}
+      </ul>
+    </>
   );
 }

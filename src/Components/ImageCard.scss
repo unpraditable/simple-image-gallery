@@ -1,8 +1,9 @@
 .image-card {
   list-style: none;
   img {
-    height: 100px;
-    width: 100px;
+    height: 150px;
+    width: 150px;
+    object-fit: cover;
     border-radius: 16px;
   }
 }

@@ -4,7 +4,7 @@ import ImageService from "./ImageService";
 
 describe("ImageService", () => {
   describe("getImages", () => {
-    it("calls axios API with correct params", () => {
+    it("calls axios API without search query with correct params", () => {
       //given
       jest.spyOn(axios, "get");
 
@@ -13,11 +13,31 @@ describe("ImageService", () => {
 
       //then
       expect(axios.get).toHaveBeenCalledWith(
-        "https://api.unsplash.com/photos",
+        "https://api.unsplash.com/collections/2423569/photos",
         {
           params: {
             client_id: APP_KEY,
-            per_page: 36,
+            per_page: 30,
+          },
+        }
+      );
+    });
+
+    it("calls axios API with search query with correct params", () => {
+      //given
+      jest.spyOn(axios, "get");
+
+      //when
+      ImageService.getImages("dog");
+
+      //then
+      expect(axios.get).toHaveBeenCalledWith(
+        "https://api.unsplash.com/search/photos",
+        {
+          params: {
+            client_id: APP_KEY,
+            per_page: 30,
+            query: "dog",
           },
         }
       );
