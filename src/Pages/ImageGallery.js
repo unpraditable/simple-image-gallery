@@ -1,25 +1,23 @@
 import { useEffect, useState } from "react";
+import ImageCard from "../Components/ImageCard";
 import ImageService from "../Services/ImageService";
+import "./ImageGallery.scss";
 
 export default function ImageGallery() {
   const [images, setImages] = useState([]);
+  const [isReady, setIsReady] = useState(false);
   useEffect(() => {
-    ImageService.getImages().then(({ data }) => {
-      console.log({ data });
-      setImages(data);
-    });
+    ImageService.getImages()
+      .then(({ data }) => {
+        setImages(data);
+      })
+      .finally(() => {
+        setIsReady(true);
+      });
   }, []);
   return (
-    <ul>
-      {images.length > 0 ? (
-        images.map((image) => (
-          <li key={image.id}>
-            <img src={image.urls.thumb} alt={image.alt_description} />
-          </li>
-        ))
-      ) : (
-        <p>No Images Found</p>
-      )}
+    <ul className="image-gallery">
+      {isReady ? <ImageCard images={images} /> : <p>Loading...</p>}
     </ul>
   );
 }

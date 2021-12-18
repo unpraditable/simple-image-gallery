@@ -17,7 +17,7 @@ describe("ImageService", () => {
         {
           params: {
             client_id: APP_KEY,
-            per_page: 24,
+            per_page: 36,
           },
         }
       );
