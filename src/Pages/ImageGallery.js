@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef } from "react";
 import ImageCard from "../Components/ImageCard";
 import Lightbox from "../Components/Lightbox";
+import RadioButtonList from "../Components/RadioButtonList";
 import ImageService from "../Services/ImageService";
 import "./ImageGallery.scss";
 
@@ -15,6 +16,75 @@ export default function ImageGallery() {
   const searchRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
 
+  const [sort, setSort] = useState("relevant");
+  const [color, setColor] = useState();
+  const [orientation, setOrientation] = useState();
+
+  function handleSort(value) {
+    setImages([]);
+    setPage(1);
+    setHasNextData(true);
+    setIsReady(false);
+    setSort(value);
+  }
+  function handleChangeColor(value) {
+    setImages([]);
+    setPage(1);
+    setHasNextData(true);
+    setIsReady(false);
+    setColor(value);
+  }
+  function handleChangeOrientation(value) {
+    setImages([]);
+    setPage(1);
+    setHasNextData(true);
+    setIsReady(false);
+    setOrientation(value);
+  }
+  const radioList = [
+    {
+      title: "sort by",
+      handleClick: handleSort,
+      items: [
+        {
+          title: "Relevance",
+          value: "relevant",
+        },
+        { title: "Newest", value: "latest" },
+      ],
+    },
+    {
+      title: "color",
+      handleClick: handleChangeColor,
+
+      items: [
+        { title: "Any Color" },
+        {
+          title: "Black and White",
+          value: "black_and_white",
+        },
+      ],
+    },
+    {
+      title: "orientation",
+      handleClick: handleChangeOrientation,
+      items: [
+        { title: "Any" },
+        {
+          title: "Landscape",
+          value: "landscape",
+        },
+        {
+          title: "Portrait",
+          value: "portrait",
+        },
+        {
+          title: "Square",
+          value: "squarish",
+        },
+      ],
+    },
+  ];
   function onSearchSubmit(e) {
     e.preventDefault();
     setImages([]);
@@ -57,7 +127,7 @@ export default function ImageGallery() {
     if (hasNextData) {
       setIsReady(false);
 
-      ImageService.getImages(searchQuery, page)
+      ImageService.getImages(searchQuery, page, { color, orientation }, sort)
         .then(({ data }) => {
           const newImages = data.results ? data.results : data;
           setImages([...images, ...newImages]);
@@ -70,13 +140,16 @@ export default function ImageGallery() {
           setIsReady(true);
         });
     }
-  }, [searchQuery, page]);
+  }, [searchQuery, page, color, orientation, sort]);
 
   return (
     <>
       <form ref={searchRef} className="image-search" onSubmit={onSearchSubmit}>
         <input placeholder="Search Image" />
       </form>
+      {radioList.map((radio) => (
+        <RadioButtonList optionList={radio} />
+      ))}
       <ul className="image-gallery">
         <ImageCard
           images={images}
