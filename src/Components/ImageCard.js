@@ -7,7 +7,7 @@ function ImageCard({ images, showLightbox, isReady }) {
         <li
           className="image-card"
           key={image.id}
-          onClick={() => showLightbox(image.id)}
+          onClick={() => showLightbox(image)}
         >
           <img src={image.urls.thumb} alt={image.alt_description} />
         </li>

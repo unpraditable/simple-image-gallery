@@ -94,8 +94,9 @@ export default function ImageGallery() {
     setSearchQuery(searchRef.current[0].value);
   }
 
-  function showLightbox(id) {
-    setStoredImageId(id);
+  function showLightbox(item) {
+    setStoredImageId(item.id);
+    setImage(item);
     setIsLightBoxShown(true);
   }
 
@@ -114,14 +115,6 @@ export default function ImageGallery() {
       setPage(page + 1);
     }
   };
-
-  useEffect(() => {
-    if (storedImageId) {
-      ImageService.getImageDetail(storedImageId, page).then(({ data }) => {
-        setImage(data);
-      });
-    }
-  }, [storedImageId]);
 
   useEffect(() => {
     if (hasNextData) {

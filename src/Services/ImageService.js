@@ -28,12 +28,4 @@ export default class ImageService {
       : "https://api.unsplash.com/collections/2423569/photos";
     return axios.get(url, { params });
   }
-
-  static getImageDetail(id) {
-    const params = {
-      client_id: APP_KEY,
-    };
-    const url = `https://api.unsplash.com/photos/${id}`;
-    return axios.get(url, { params });
-  }
 }

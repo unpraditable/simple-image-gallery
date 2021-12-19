@@ -50,6 +50,10 @@ describe("ImageCard", () => {
     const listItem = container.querySelector("li");
     fireEvent.click(listItem);
 
-    expect(stubShowLightbox).toHaveBeenCalledWith(1);
+    expect(stubShowLightbox).toHaveBeenCalledWith({
+      alt_description: "stub-alt-1",
+      id: 1,
+      urls: { thumb: "stub-thumb-1" },
+    });
   });
 });
