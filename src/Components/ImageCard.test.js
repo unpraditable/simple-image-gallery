@@ -5,7 +5,11 @@ describe("ImageCard", () => {
   const stubShowLightbox = jest.fn();
   function renderImages(images = []) {
     return render(
-      <ImageCard images={images} showLightbox={stubShowLightbox} />
+      <ImageCard
+        images={images}
+        showLightbox={stubShowLightbox}
+        isReady={true}
+      />
     );
   }
   const stubImages = [

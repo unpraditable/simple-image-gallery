@@ -54,9 +54,10 @@ export default function ImageGallery() {
 
   useEffect(() => {
     if (hasNextData) {
+      setIsReady(false);
+
       ImageService.getImages(searchQuery, page)
         .then(({ data }) => {
-          setIsReady(false);
           const newImages = data.results ? data.results : data;
           setImages([...images, ...newImages]);
           console.log(newImages.length);
@@ -76,11 +77,12 @@ export default function ImageGallery() {
         <input placeholder="Search Image" />
       </form>
       <ul className="image-gallery">
-        {isReady ? (
-          <ImageCard images={images} showLightbox={showLightbox} />
-        ) : (
-          <p>Loading...</p>
-        )}
+        <ImageCard
+          images={images}
+          showLightbox={showLightbox}
+          isReady={isReady}
+        />
+        {!isReady && <p>Loading...</p>}
       </ul>
       {image && (
         <Lightbox
