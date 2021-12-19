@@ -1,6 +1,7 @@
 .image-card {
   list-style: none;
   img {
+    background-color: lighten(gray, 20%);
     height: 150px;
     width: 150px;
     object-fit: cover;

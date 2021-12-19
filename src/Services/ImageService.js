@@ -3,12 +3,18 @@ import { APP_KEY } from "../Constants/constants";
 
 export default class ImageService {
   static getImages(query, page = 1) {
-    const params = {
-      query,
+    const collectionParams = {
       client_id: APP_KEY,
       per_page: 30,
       page,
     };
+
+    const searchParams = {
+      ...collectionParams,
+      query,
+    };
+
+    const params = query ? searchParams : collectionParams;
     const url = query
       ? "https://api.unsplash.com/search/photos"
       : "https://api.unsplash.com/collections/2423569/photos";
