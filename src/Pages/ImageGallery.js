@@ -9,12 +9,16 @@ export default function ImageGallery() {
   const [image, setImage] = useState();
   const [isReady, setIsReady] = useState(false);
   const [isLightBoxShown, setIsLightBoxShown] = useState(false);
+  const [hasNextData, setHasNextData] = useState(true);
+  const [page, setPage] = useState(1);
   const [storedImageId, setStoredImageId] = useState();
   const searchRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
 
   function onSearchSubmit(e) {
     e.preventDefault();
+    setImages([]);
+    setHasNextData(true);
     setIsReady(false);
     setSearchQuery(searchRef.current[0].value);
   }
@@ -30,25 +34,41 @@ export default function ImageGallery() {
     setIsLightBoxShown(false);
   }
 
+  //infinite scrolling method
+  window.onscroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      setPage(page + 1);
+    }
+  };
+
   useEffect(() => {
     if (storedImageId) {
-      ImageService.getImageDetail(storedImageId).then(({ data }) => {
-        console.log("kepanggil");
+      ImageService.getImageDetail(storedImageId, page).then(({ data }) => {
         setImage(data);
       });
     }
   }, [storedImageId]);
 
   useEffect(() => {
-    ImageService.getImages(searchQuery)
-      .then(({ data }) => {
-        const newImages = data.results ? data.results : data;
-        setImages(newImages);
-      })
-      .finally(() => {
-        setIsReady(true);
-      });
-  }, [searchQuery]);
+    if (hasNextData) {
+      ImageService.getImages(searchQuery, page)
+        .then(({ data }) => {
+          setIsReady(false);
+          const newImages = data.results ? data.results : data;
+          setImages([...images, ...newImages]);
+          console.log(newImages.length);
+          if (newImages.length === 0) {
+            setHasNextData(false);
+          }
+        })
+        .finally(() => {
+          setIsReady(true);
+        });
+    }
+  }, [searchQuery, page]);
 
   return (
     <>

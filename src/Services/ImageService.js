@@ -2,11 +2,12 @@ import axios from "axios";
 import { APP_KEY } from "../Constants/constants";
 
 export default class ImageService {
-  static getImages(query) {
+  static getImages(query, page = 1) {
     const params = {
       query,
       client_id: APP_KEY,
       per_page: 30,
+      page,
     };
     const url = query
       ? "https://api.unsplash.com/search/photos"

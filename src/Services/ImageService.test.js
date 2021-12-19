@@ -18,6 +18,7 @@ describe("ImageService", () => {
           params: {
             client_id: APP_KEY,
             per_page: 30,
+            page: 1,
           },
         }
       );
@@ -38,6 +39,7 @@ describe("ImageService", () => {
             client_id: APP_KEY,
             per_page: 30,
             query: "dog",
+            page: 1,
           },
         }
       );
