@@ -2,7 +2,12 @@ import axios from "axios";
 import { APP_KEY } from "../Constants/constants";
 
 export default class ImageService {
-  static getImages(query, page = 1) {
+  static getImages(
+    query,
+    page = 1,
+    filters = { color: undefined, orientation: undefined },
+    orderBy = "relevant"
+  ) {
     const collectionParams = {
       client_id: APP_KEY,
       per_page: 30,
@@ -12,6 +17,9 @@ export default class ImageService {
     const searchParams = {
       ...collectionParams,
       query,
+      order_by: orderBy,
+      color: filters.color,
+      orientation: filters.orientation,
     };
 
     const params = query ? searchParams : collectionParams;

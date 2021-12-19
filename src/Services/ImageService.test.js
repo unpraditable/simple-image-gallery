@@ -40,6 +40,7 @@ describe("ImageService", () => {
             per_page: 30,
             query: "dog",
             page: 1,
+            order_by: "relevant",
           },
         }
       );
@@ -60,6 +61,35 @@ describe("ImageService", () => {
         {
           params: {
             client_id: APP_KEY,
+          },
+        }
+      );
+    });
+  });
+
+  describe("filter", () => {
+    it("calls API with filters param (color and orientation)", () => {
+      //given
+      jest.spyOn(axios, "get");
+
+      //when
+      ImageService.getImages("dog", 1, {
+        color: "black",
+        orientation: "landscape",
+      });
+
+      //then
+      expect(axios.get).toHaveBeenCalledWith(
+        "https://api.unsplash.com/search/photos",
+        {
+          params: {
+            client_id: APP_KEY,
+            per_page: 30,
+            query: "dog",
+            page: 1,
+            order_by: "relevant",
+            color: "black",
+            orientation: "landscape",
           },
         }
       );

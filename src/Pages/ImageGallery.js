@@ -18,6 +18,7 @@ export default function ImageGallery() {
   function onSearchSubmit(e) {
     e.preventDefault();
     setImages([]);
+    setPage(1);
     setHasNextData(true);
     setIsReady(false);
     setSearchQuery(searchRef.current[0].value);
