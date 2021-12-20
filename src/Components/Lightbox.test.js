@@ -23,7 +23,7 @@ describe("Lightbox", () => {
     );
   };
   it("does not render Lightbox if isLightBoxShown is not defined", () => {
-    const { container, debug } = renderLightbox(false);
+    const { container } = renderLightbox(false);
 
     expect(container.querySelector(".lightbox")).not.toBeInTheDocument();
   });

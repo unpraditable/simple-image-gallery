@@ -4,9 +4,9 @@ export default function RadioButtonList({ optionList }) {
       <h4>{optionList.title}</h4>
       <ul className="settings">
         {optionList.items.length > 0 &&
-          optionList.items.map((item) => {
+          optionList.items.map((item, i) => {
             return (
-              <li>
+              <li key={i}>
                 <label>
                   <input
                     onChange={() => optionList.handleClick(item.value)}
