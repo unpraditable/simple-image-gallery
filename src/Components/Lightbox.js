@@ -2,7 +2,7 @@ import "./Lightbox.scss";
 
 export default function Lightbox({ isLightBoxShown, image, hideLightbox }) {
   return (
-    isLightBoxShown.current && (
+    isLightBoxShown && (
       <div className="lightbox" onClick={hideLightbox}>
         <div className="lightbox__container">
           <header className="lightbox__header">

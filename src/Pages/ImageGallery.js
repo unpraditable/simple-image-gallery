@@ -6,7 +6,7 @@ import ImageService from "../Services/ImageService";
 import "./ImageGallery.scss";
 
 export default function ImageGallery() {
-  const [images, setImages] = useState([]);
+  const images = useRef([]);
   const [image, setImage] = useState();
   const [isReady, setIsReady] = useState(false);
   const [hasNextData, setHasNextData] = useState(true);
@@ -18,10 +18,8 @@ export default function ImageGallery() {
   const [orientation, setOrientation] = useState();
   const isLightBoxShown = useRef(false);
   const [isFilterShown, setIsFilterShown] = useState(false);
-  const localImages = JSON.parse(localStorage.getItem("images"));
-
   function reset() {
-    setImages([]);
+    images.current = [];
     setPage(1);
     setHasNextData(true);
     setIsReady(false);
@@ -118,11 +116,10 @@ export default function ImageGallery() {
   useEffect(() => {
     if (hasNextData) {
       setIsReady(false);
-
       ImageService.getImages(searchQuery, page, { color, orientation }, sort)
         .then(({ data }) => {
           const newImages = data.results ? data.results : data;
-          setImages((images) => [...images, ...newImages]);
+          images.current = [...images.current, ...newImages];
           localStorage.setItem("images", JSON.stringify(newImages));
           if (newImages.length === 0) {
             setHasNextData(false);
@@ -130,9 +127,10 @@ export default function ImageGallery() {
         })
         .catch((e) => {
           console.error(e);
-          if (images.length < 1) {
-            setImages(() => localImages);
+          if (images.current.length < 1) {
+            images.current = JSON.parse(localStorage.getItem("images"));
           }
+          setHasNextData(false);
         })
         .finally(() => {
           setIsReady(true);
@@ -163,7 +161,7 @@ export default function ImageGallery() {
 
       <ul className="image-gallery">
         <ImageCard
-          images={images}
+          images={images.current}
           showLightbox={showLightbox}
           isReady={isReady}
         />
@@ -171,7 +169,7 @@ export default function ImageGallery() {
       </ul>
       {image && (
         <Lightbox
-          isLightBoxShown={isLightBoxShown}
+          isLightBoxShown={isLightBoxShown.current}
           image={image}
           hideLightbox={hideLightbox}
         />
