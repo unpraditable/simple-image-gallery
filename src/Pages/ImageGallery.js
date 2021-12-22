@@ -122,8 +122,8 @@ export default function ImageGallery() {
       ImageService.getImages(searchQuery, page, { color, orientation }, sort)
         .then(({ data }) => {
           const newImages = data.results ? data.results : data;
-          setImages([...images, ...newImages]);
-          localStorage.setItem("images", JSON.stringify(images));
+          setImages((images) => [...images, ...newImages]);
+          localStorage.setItem("images", JSON.stringify(newImages));
           if (newImages.length === 0) {
             setHasNextData(false);
           }
@@ -131,14 +131,14 @@ export default function ImageGallery() {
         .catch((e) => {
           console.error(e);
           if (images.length < 1) {
-            setImages(localImages);
+            setImages(() => localImages);
           }
         })
         .finally(() => {
           setIsReady(true);
         });
     }
-  }, [searchQuery, page, color, orientation, sort]);
+  }, [searchQuery, page, color, orientation, sort, hasNextData]);
 
   return (
     <>
