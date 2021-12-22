@@ -18,6 +18,7 @@ export default function ImageGallery() {
   const [orientation, setOrientation] = useState();
   const isLightBoxShown = useRef(false);
   const [isFilterShown, setIsFilterShown] = useState(false);
+  const localImages = JSON.parse(localStorage.getItem("images"));
 
   function reset() {
     setImages([]);
@@ -122,11 +123,17 @@ export default function ImageGallery() {
         .then(({ data }) => {
           const newImages = data.results ? data.results : data;
           setImages([...images, ...newImages]);
+          localStorage.setItem("images", JSON.stringify(images));
           if (newImages.length === 0) {
             setHasNextData(false);
           }
         })
-        .catch((e) => console.error(e))
+        .catch((e) => {
+          console.error(e);
+          if (images.length < 1) {
+            setImages(localImages);
+          }
+        })
         .finally(() => {
           setIsReady(true);
         });

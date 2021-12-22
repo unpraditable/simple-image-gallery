@@ -8,7 +8,7 @@ function ImageCard({ images, showLightbox, isReady }) {
           <img src={image.urls.thumb} alt={image.alt_description} />
         </li>
       ))
-    : isReady && <p>No Images Found</p>;
+    : isReady && <p>No results found</p>;
 }
 
 export default React.memo(ImageCard);
