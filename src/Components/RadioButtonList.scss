@@ -1,0 +1,21 @@
+.radio {
+  align-self: baseline;
+  h4 {
+    margin: 4px 0;
+  }
+  ul {
+    padding: 0;
+    list-style: none;
+    li {
+      margin: 4px 0;
+      label {
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        input {
+          margin-right: 8px;
+        }
+      }
+    }
+  }
+}

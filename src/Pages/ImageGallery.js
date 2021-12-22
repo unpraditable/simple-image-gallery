@@ -9,36 +9,34 @@ export default function ImageGallery() {
   const [images, setImages] = useState([]);
   const [image, setImage] = useState();
   const [isReady, setIsReady] = useState(false);
-  const [isLightBoxShown, setIsLightBoxShown] = useState(false);
   const [hasNextData, setHasNextData] = useState(true);
   const [page, setPage] = useState(1);
-  const [storedImageId, setStoredImageId] = useState();
   const searchRef = useRef();
   const [searchQuery, setSearchQuery] = useState("");
-
   const [sort, setSort] = useState("relevant");
   const [color, setColor] = useState();
   const [orientation, setOrientation] = useState();
+  const isLightBoxShown = useRef(false);
+  const [isFilterShown, setIsFilterShown] = useState(false);
 
-  function handleSort(value) {
+  function reset() {
     setImages([]);
     setPage(1);
     setHasNextData(true);
     setIsReady(false);
+  }
+
+  function handleSort(value) {
+    reset();
     setSort(value);
   }
   function handleChangeColor(value) {
-    setImages([]);
-    setPage(1);
-    setHasNextData(true);
-    setIsReady(false);
+    reset();
     setColor(value);
   }
+
   function handleChangeOrientation(value) {
-    setImages([]);
-    setPage(1);
-    setHasNextData(true);
-    setIsReady(false);
+    reset();
     setOrientation(value);
   }
   const radioList = [
@@ -85,25 +83,25 @@ export default function ImageGallery() {
       ],
     },
   ];
+
   function onSearchSubmit(e) {
     e.preventDefault();
-    setImages([]);
-    setPage(1);
-    setHasNextData(true);
-    setIsReady(false);
+    reset();
     setSearchQuery(searchRef.current[0].value);
   }
 
   function showLightbox(item) {
-    setStoredImageId(item.id);
     setImage(item);
-    setIsLightBoxShown(true);
+    isLightBoxShown.current = true;
   }
 
   function hideLightbox() {
     setImage();
-    setStoredImageId();
-    setIsLightBoxShown(false);
+    isLightBoxShown.current = false;
+  }
+
+  function toggleFilter() {
+    setIsFilterShown(!isFilterShown);
   }
 
   //infinite scrolling method
@@ -124,11 +122,11 @@ export default function ImageGallery() {
         .then(({ data }) => {
           const newImages = data.results ? data.results : data;
           setImages([...images, ...newImages]);
-          console.log(newImages.length);
           if (newImages.length === 0) {
             setHasNextData(false);
           }
         })
+        .catch((e) => console.error(e))
         .finally(() => {
           setIsReady(true);
         });
@@ -137,12 +135,25 @@ export default function ImageGallery() {
 
   return (
     <>
-      <form ref={searchRef} className="image-search" onSubmit={onSearchSubmit}>
-        <input placeholder="Search Image" />
-      </form>
-      {radioList.map((radio) => (
-        <RadioButtonList optionList={radio} />
-      ))}
+      <div className="search-container">
+        <form
+          ref={searchRef}
+          className="image-search"
+          onSubmit={onSearchSubmit}
+        >
+          <input placeholder="Search Image" />
+        </form>
+        <button onClick={toggleFilter}>
+          <span>Filter</span>
+        </button>
+      </div>
+
+      <div className={`radio-container ${!isFilterShown ? "hidden" : ""}`}>
+        {radioList.map((radio, i) => (
+          <RadioButtonList key={i} optionList={radio} />
+        ))}
+      </div>
+
       <ul className="image-gallery">
         <ImageCard
           images={images}
